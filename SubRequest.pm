@@ -13,11 +13,12 @@ Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
     use Catalyst 'SubRequest';
 
-    $c->subreq('!test','foo','bar');
+    $c->subreq('/test','foo','bar');
 
 =head1 DESCRIPTION
 
-Make subrequests to actions in Catalyst.
+Make subrequests to actions in Catalyst. Uses the private name of
+the action for dispatch.
 
 =head1 METHODS
 

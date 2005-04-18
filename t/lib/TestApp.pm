@@ -10,7 +10,7 @@ __PACKAGE__->setup();
 
     sub begin : Private {
         my ( $self, $c ) = @_;
-        $c->res->body($c->res->body().'1');
+        $c->res->body('1');
     }
 
     sub subreq : Global {
