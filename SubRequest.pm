@@ -13,7 +13,7 @@ Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
     use Catalyst 'SubRequest';
 
-    $c->subreq('/test','foo','bar');
+    $c->subreq('/test/foo/bar');
 
 =head1 DESCRIPTION
 
@@ -28,8 +28,7 @@ the action for dispatch.
 
 =item sub_request
 
-takes the name of the action you would like to call, as well as the
-arguments you want to pass to it.
+Takes a full path to a path you'd like to dispatch to.
 
 =back 
 
@@ -38,12 +37,15 @@ arguments you want to pass to it.
 *subreq = \&sub_request;
 
 sub sub_request {
-    my ( $c, $action, @args ) = @_;
+    my ( $c, $path ) = @_;
     my %old_req;
+    $path =~ s/^\///;
     $old_req{stash}   = $c->{stash};$c->{stash}={};
     $old_req{content} = $c->res->output;$c->res->output(undef);
-    $old_req{args}    = $c->req->arguments;$c->req->arguments([@args]);
-    $old_req{action}  = $c->req->action;$c->req->action($action);
+    $old_req{args}    = $c->req->arguments;
+    $old_req{action}  = $c->req->action;$c->req->action(undef);
+    $old_req{path}  = $c->req->path;$c->req->path($path);
+    $c->prepare_action();
     $c->dispatch();
     my $output  = $c->res->output;
     $c->{stash} = $old_req{stash};

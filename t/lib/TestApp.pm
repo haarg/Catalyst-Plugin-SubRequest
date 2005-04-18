@@ -13,18 +13,16 @@ __PACKAGE__->setup();
         $c->res->body('1');
     }
 
-    sub subreq : Global {
+    sub subtest : Global {
         my ( $self, $c ) = @_;
-        $c->log->info("self is ".  ref $self);
-        $c->log->info("Context is ". ref $c);
-        my $subreq= $c->res->body() .
-                        $c->subreq('/normal');
+        my $subreq= $c->res->body().
+                    $c->subreq('/normal/4');
         $c->res->body($subreq);
     }
   
     sub normal : Global {
-        my ( $self, $c ) = @_;
-        $c->res->body($c->res->body().'2');
+        my ( $self, $c, $arg ) = @_;
+        $c->res->body($c->res->body().$arg);
     }
     
     sub end : Private {
