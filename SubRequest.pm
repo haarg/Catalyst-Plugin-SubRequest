@@ -46,6 +46,9 @@ sub sub_request {
     $old_req{action}  = $c->req->action;$c->req->action(undef);
     $old_req{path}  = $c->req->path;$c->req->path($path);
     $c->prepare_action();
+    $c->log->debug("Subrequest to $path , action is ". 
+                   $c->req->action )
+      if $c->debug;
     $c->dispatch();
     my $output  = $c->res->output;
     $c->{stash} = $old_req{stash};

@@ -1,5 +1,7 @@
 Revision history for Perl extension Catalyst::Plugin::Static.
 
+0.05  Sat Mar 19 20:27:00 2005
+        - Added a log message in debug mode.
 0.04  Sat Mar 19 20:27:00 2005
         - Updated forward to cat5 style
         - Using Catalyst::Dispatch::dispatch instead of forward.
