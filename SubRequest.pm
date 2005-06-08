@@ -13,22 +13,23 @@ Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
     use Catalyst 'SubRequest';
 
-    $c->subreq('/test/foo/bar');
+    $c->subreq('/test/foo/bar', template='magic.tt');
 
 =head1 DESCRIPTION
 
-Make subrequests to actions in Catalyst. Uses the private name of
-the action for dispatch.
+Make subrequests to actions in Catalyst. Uses the  catalyst
+dispatcher, so it will work like an external url call.
 
 =head1 METHODS
 
 =over 4 
 
-=item subreq action, args
+=item subreq path, [stash]
 
 =item sub_request
 
-Takes a full path to a path you'd like to dispatch to.
+Takes a full path to a path you'd like to dispatch to. Any additional
+parameters are put into the stash.
 
 =back 
 
@@ -36,15 +37,18 @@ Takes a full path to a path you'd like to dispatch to.
 
 *subreq = \&sub_request;
 
+use Data::Dumper qw/Dumper/;
 sub sub_request {
-    my ( $c, $path ) = @_;
+    my ( $c, $path, $stash ) = @_;
+
     my %old_req;
     $path =~ s/^\///;
-    $old_req{stash}   = $c->{stash};$c->{stash}={};
+    $old_req{stash}   = $c->{stash};$c->{stash}=$stash || {};
     $old_req{content} = $c->res->output;$c->res->output(undef);
     $old_req{args}    = $c->req->arguments;
     $old_req{action}  = $c->req->action;$c->req->action(undef);
     $old_req{path}  = $c->req->path;$c->req->path($path);
+    $old_req{params}  = $c->req->params;$c->req->{params} = {};
     $c->prepare_action();
     $c->log->debug("Subrequest to $path , action is ". 
                    $c->req->action )
@@ -52,9 +56,9 @@ sub sub_request {
     $c->dispatch();
     my $output  = $c->res->output;
     $c->{stash} = $old_req{stash};
-    $c->res->output($old_req{content});
+    $c->req->{params}=$old_req{params};
     $c->req->arguments($old_req{args});
-    $c->req->action($old_req{action});
+    $c->res->output($old_req{content});
     return $output;
 }
 
