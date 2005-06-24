@@ -1,6 +1,6 @@
 Revision history for Perl extension Catalyst::Plugin::Static.
 
-0.06  2005-06-xx 20:27:00 
+0.06  2005-06-08 20:27:00 
         - Flush params as well
         - allow stuff to be passed to the stash
 0.05  2005-03-19 20:27:00 

@@ -2,7 +2,7 @@ package Catalyst::Plugin::SubRequest;
 
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.06';
 
 
 =head1 NAME
