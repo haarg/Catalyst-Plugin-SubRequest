@@ -43,7 +43,7 @@ sub sub_request {
 
     my %old_req;
     $path =~ s/^\///;
-    $old_req{stash}   = $c->{stash};$c->{stash}=$stash || {};
+    local $c->{stash}=$stash || {};
     $old_req{content} = $c->res->output;$c->res->output(undef);
     $old_req{args}    = $c->req->arguments;
     $old_req{action}  = $c->req->action;$c->req->action(undef);
@@ -51,11 +51,10 @@ sub sub_request {
     $old_req{params}  = $c->req->params;$c->req->{params} = {};
     $c->prepare_action();
     $c->log->debug("Subrequest to $path , action is ". 
-                   $c->req->action )
+                           $c->req->action )
       if $c->debug;
     $c->dispatch();
     my $output  = $c->res->output;
-    $c->{stash} = $old_req{stash};
     $c->req->{params}=$old_req{params};
     $c->req->arguments($old_req{args});
     $c->res->output($old_req{content});
