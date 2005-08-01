@@ -2,7 +2,7 @@ package Catalyst::Plugin::SubRequest;
 
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 =head1 NAME
@@ -13,7 +13,7 @@ Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
     use Catalyst 'SubRequest';
 
-    $c->subreq('/test/foo/bar', template='magic.tt');
+    $c->subreq('/test/foo/bar', { template => 'magic.tt' });
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,7 @@ dispatcher, so it will work like an external url call.
 
 =over 4 
 
-=item subreq path, [stash]
+=item subreq path, [stash as hash ref], [parameters as hash ref]
 
 =item sub_request
 
@@ -39,7 +39,7 @@ parameters are put into the stash.
 
 use Data::Dumper qw/Dumper/;
 sub sub_request {
-    my ( $c, $path, $stash ) = @_;
+    my ( $c, $path, $stash, $params ) = @_;
 
     my %old_req;
     $path =~ s/^\///;
@@ -47,16 +47,16 @@ sub sub_request {
     $old_req{content} = $c->res->output;$c->res->output(undef);
     $old_req{args}    = $c->req->arguments;
     $old_req{action}  = $c->req->action;$c->req->action(undef);
-    $old_req{path}  = $c->req->path;$c->req->path($path);
-    $old_req{params}  = $c->req->params;$c->req->{params} = {};
+    $old_req{path}    = $c->req->path;$c->req->path($path);
+    $old_req{params}  = $c->req->params;$c->req->params($params || {});
     $c->prepare_action();
-    $c->log->debug("Subrequest to $path , action is ". 
-                           $c->req->action )
-      if $c->debug;
+    $c->log->debug("Subrequest to $path , action is ".  $c->req->action )
+        if $c->debug;
     $c->dispatch();
     my $output  = $c->res->output;
     $c->req->{params}=$old_req{params};
     $c->req->arguments($old_req{args});
+    $c->req->path($old_req{path});
     $c->res->output($old_req{content});
     return $output;
 }
