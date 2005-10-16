@@ -1,5 +1,7 @@
 Revision history for Perl extension Catalyst::Plugin::Static.
 
+0.08  2005-12-10 01:34:00 
+	- patch to handle NEXT trouble.
 0.07  2005-08-01 12:08:00 
         - reset path.
         - allow passing params.

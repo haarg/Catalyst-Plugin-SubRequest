@@ -2,7 +2,7 @@ package Catalyst::Plugin::SubRequest;
 
 use strict;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 
 =head1 NAME
@@ -52,6 +52,8 @@ sub sub_request {
     $c->prepare_action();
     $c->log->debug("Subrequest to $path , action is ".  $c->req->action )
         if $c->debug;
+    # FIXME: Hack until proper patch in NEXT.
+    local $NEXT::NEXT{$c,'dispatch'};
     $c->dispatch();
     my $output  = $c->res->output;
     $c->req->{params}=$old_req{params};
