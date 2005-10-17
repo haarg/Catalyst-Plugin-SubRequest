@@ -41,26 +41,23 @@ use Data::Dumper qw/Dumper/;
 sub sub_request {
     my ( $c, $path, $stash, $params ) = @_;
 
-    my %old_req;
     $path =~ s/^\///;
-    local $c->{stash}=$stash || {};
-    $old_req{content} = $c->res->output;$c->res->output(undef);
-    $old_req{args}    = $c->req->arguments;
-    $old_req{action}  = $c->req->action;$c->req->action(undef);
-    $old_req{path}    = $c->req->path;$c->req->path($path);
-    $old_req{params}  = $c->req->params;$c->req->params($params || {});
+    local $c->{stash} = $stash || {};
+    local $c->res->{output} = undef;
+    local $c->req->{arguments} = $c->req->{arguments};
+    local $c->req->{action};
+    local $c->req->{path};
+    local $c->req->{params};
+
+    $c->req->path($path);
+    $c->req->params($params || {});
     $c->prepare_action();
     $c->log->debug("Subrequest to $path , action is ".  $c->req->action )
         if $c->debug;
     # FIXME: Hack until proper patch in NEXT.
     local $NEXT::NEXT{$c,'dispatch'};
     $c->dispatch();
-    my $output  = $c->res->output;
-    $c->req->{params}=$old_req{params};
-    $c->req->arguments($old_req{args});
-    $c->req->path($old_req{path});
-    $c->res->output($old_req{content});
-    return $output;
+    return $c->res->output;
 }
 
 =head1 SEE ALSO
