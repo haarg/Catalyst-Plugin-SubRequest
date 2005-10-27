@@ -1,5 +1,7 @@
-Revision history for Perl extension Catalyst::Plugin::Static.
+Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.09  2005-28-10 01:07:00 
+	- localize body rather than output, which is an alias
 0.08  2005-12-10 01:34:00 
 	- patch to handle NEXT trouble.
 0.07  2005-08-01 12:08:00 

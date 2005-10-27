@@ -2,7 +2,7 @@ package Catalyst::Plugin::SubRequest;
 
 use strict;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 
 =head1 NAME
@@ -43,7 +43,7 @@ sub sub_request {
 
     $path =~ s/^\///;
     local $c->{stash} = $stash || {};
-    local $c->res->{output} = undef;
+    local $c->res->{body} = undef;
     local $c->req->{arguments} = $c->req->{arguments};
     local $c->req->{action};
     local $c->req->{path};
@@ -57,7 +57,7 @@ sub sub_request {
     # FIXME: Hack until proper patch in NEXT.
     local $NEXT::NEXT{$c,'dispatch'};
     $c->dispatch();
-    return $c->res->output;
+    return $c->res->body;
 }
 
 =head1 SEE ALSO
