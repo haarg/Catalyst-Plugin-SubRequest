@@ -1,6 +1,6 @@
 package TestApp;
 
-use Catalyst qw[-Engine=Test SubRequest];
+use Catalyst qw[SubRequest];
 
 __PACKAGE__->config(
     name=>"subrequest test"
