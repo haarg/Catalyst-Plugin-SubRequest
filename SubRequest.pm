@@ -4,7 +4,6 @@ use strict;
 
 our $VERSION = '0.09';
 
-
 =head1 NAME
 
 Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
@@ -37,11 +36,10 @@ parameters are put into the stash.
 
 *subreq = \&sub_request;
 
-use Data::Dumper qw/Dumper/;
 sub sub_request {
     my ( $c, $path, $stash, $params ) = @_;
 
-    $path =~ s/^\///;
+    $path =~ s#^/##;
     local $c->{stash} = $stash || {};
     local $c->res->{body} = undef;
     local $c->req->{arguments} = $c->req->{arguments};
@@ -51,12 +49,12 @@ sub sub_request {
 
     $c->req->path($path);
     $c->req->params($params || {});
-    $c->prepare_action();
-    $c->log->debug("Subrequest to $path , action is ".  $c->req->action )
+    $c->prepare_action;
+    $c->log->debug("Subrequest to ${path}, action is ".  $c->req->action )
         if $c->debug;
     # FIXME: Hack until proper patch in NEXT.
     local $NEXT::NEXT{$c,'dispatch'};
-    $c->dispatch();
+    $c->dispatch;
     return $c->res->body;
 }
 
