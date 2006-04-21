@@ -1,5 +1,7 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.11  2006-04-21 14:13:00
+        - $c->req->params restored after sub_request
 0.10  2005-12-08 13:15:00  
         - Updated test suite to work with new catalyst.
 0.09  2005-10-28 01:07:00 

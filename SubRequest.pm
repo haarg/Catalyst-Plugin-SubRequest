@@ -2,7 +2,7 @@ package Catalyst::Plugin::SubRequest;
 
 use strict;
 
-our $VERSION = '0.09';
+our $VERSION = '0.11';
 
 =head1 NAME
 
@@ -45,7 +45,7 @@ sub sub_request {
     local $c->req->{arguments} = $c->req->{arguments};
     local $c->req->{action};
     local $c->req->{path};
-    local $c->req->{params};
+    local $c->req->{parameters};
 
     $c->req->path($path);
     $c->req->params($params || {});
