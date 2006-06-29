@@ -40,22 +40,43 @@ sub sub_request {
     my ( $c, $path, $stash, $params ) = @_;
 
     $path =~ s#^/##;
-    local $c->{stash} = $stash || {};
-    local $c->res->{body} = undef;
-    local $c->req->{arguments} = $c->req->{arguments};
-    local $c->req->{action};
-    local $c->req->{path};
-    local $c->req->{parameters};
 
-    $c->req->path($path);
-    $c->req->params($params || {});
-    $c->prepare_action;
-    $c->log->debug("Subrequest to ${path}, action is ".  $c->req->action )
-        if $c->debug;
-    # FIXME: Hack until proper patch in NEXT.
-    local $NEXT::NEXT{$c,'dispatch'};
-    $c->dispatch;
-    return $c->res->body;
+    $params ||= {};
+
+    my %request_mods = (
+        body => undef,
+        action => undef,
+        match => undef,
+        parameters => $params,
+    );
+
+    if (ref $path eq 'HASH') {
+        @request_mods{keys %$path} = values %$path;
+    } else {
+        $request_mods{path} = $path;
+    }
+
+    my $fake_engine = bless(
+        {
+            orig_request => $c->req,
+            request_mods => \%request_mods,
+        },
+        'Catalyst::Plugin::SubRequest::Internal::FakeEngine'
+    );
+
+    my $class = ref($c);
+
+    no strict 'refs';
+    no warnings 'redefine';
+
+    local *{"${class}::engine"} = sub { $fake_engine };
+
+    my $inner_ctx = $class->prepare;
+
+    $inner_ctx->stash($stash || {});
+
+    $inner_ctx->dispatch;
+    return $inner_ctx->response->body;
 }
 
 =head1 SEE ALSO
@@ -76,5 +97,17 @@ This program is free software, you can redistribute it and/or modify it under
 the same terms as Perl itself.
 
 =cut
+
+package # hide from PAUSE
+  Catalyst::Plugin::SubRequest::Internal::FakeEngine;
+
+sub AUTOLOAD { return 1; } # yeah yeah yeah
+
+sub prepare {
+    my ($self, $c) = @_;
+    my $req = $c->request;
+    my %attrs = (%{$self->{orig_request}}, %{$self->{request_mods}});
+    @{$req}{keys %attrs} = values %attrs;
+}
 
 1;
