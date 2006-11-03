@@ -1,6 +1,7 @@
 package Catalyst::Plugin::SubRequest;
 
 use strict;
+use Tree::Simple;
 
 our $VERSION = '0.11';
 
@@ -74,8 +75,10 @@ sub sub_request {
     my $inner_ctx = $class->prepare;
 
     $inner_ctx->stash($stash || {});
-
+    
+    $inner_ctx->stats(Tree::Simple->new);
     $inner_ctx->dispatch;
+    
     return $inner_ctx->response->body;
 }
 
