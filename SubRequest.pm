@@ -1,7 +1,7 @@
 package Catalyst::Plugin::SubRequest;
 
 use strict;
-use Tree::Simple;
+use Time::HiRes qw/tv_interval/;
 
 our $VERSION = '0.11';
 
@@ -76,8 +76,16 @@ sub sub_request {
 
     $inner_ctx->stash($stash || {});
     
-    $inner_ctx->stats(Tree::Simple->new);
     $inner_ctx->dispatch;
+    
+    if ($c->debug) {
+        $inner_ctx->stats->setNodeValue({
+            action => 'subrequest:',
+            comment => '',
+            elapsed => sprintf('%fs', tv_interval($inner_ctx->stats->getNodeValue)),
+        });
+        $c->stats->addChild($inner_ctx->stats);
+    }
     
     return $inner_ctx->response->body;
 }
