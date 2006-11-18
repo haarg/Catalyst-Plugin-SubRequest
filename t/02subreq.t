@@ -4,7 +4,6 @@ use Test::More tests => 9;
 use lib 't/lib';
 use Catalyst::Test 'TestApp';
 use File::stat;
-use File::Slurp;
 use HTTP::Date;
 
 my $stat = stat($0);
