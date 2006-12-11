@@ -15,6 +15,10 @@ Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
     $c->subreq('/test/foo/bar', { template => 'magic.tt' });
 
+    $c->subreq(        {       path            => '/test/foo/bar',
+                       body            => $body        },
+               {       template        => 'magic.tt'           });
+
 =head1 DESCRIPTION
 
 Make subrequests to actions in Catalyst. Uses the  catalyst
@@ -24,12 +28,13 @@ dispatcher, so it will work like an external url call.
 
 =over 4 
 
-=item subreq path, [stash as hash ref], [parameters as hash ref]
+=item subreq [path as string or hash ref], [stash as hash ref], [parameters as hash ref]
 
 =item sub_request
 
-Takes a full path to a path you'd like to dispatch to. Any additional
-parameters are put into the stash.
+Takes a full path to a path you'd like to dispatch to.
+If the path is passed as a hash ref then it can include body, action, match and path.
+Any additional parameters are put into the stash.
 
 =back 
 
