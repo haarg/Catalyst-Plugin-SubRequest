@@ -123,7 +123,13 @@ sub prepare {
     my ($self, $c) = @_;
     my $req = $c->request;
     my %attrs = (%{$self->{orig_request}}, %{$self->{request_mods}});
-    @{$req}{keys %attrs} = values %attrs;
+    while (my ($key,$value) = each %attrs) {
+        if (my $mut = $req->can($key)) {
+            $req->$mut($value);
+        } else {
+            $req->{$key} = $value;
+        }
+    }
 }
 
 1;
