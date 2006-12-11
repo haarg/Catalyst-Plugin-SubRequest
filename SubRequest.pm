@@ -122,8 +122,9 @@ sub AUTOLOAD { return 1; } # yeah yeah yeah
 sub prepare {
     my ($self, $c) = @_;
     my $req = $c->request;
-    my %attrs = (%{$self->{orig_request}}, %{$self->{request_mods}});
-    while (my ($key,$value) = each %attrs) {
+    
+    @{$req}{keys %{$self->{orig_request}}} = values %{$self->{orig_request}};
+    while (my ($key,$value) = each %{$self->{request_mods}}) {
         if (my $mut = $req->can($key)) {
             $req->$mut($value);
         } else {
