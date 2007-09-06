@@ -1,10 +1,11 @@
-use ExtUtils::MakeMaker;
+use inc::Module::Install 0.67;
 
-WriteMakefile(
-    NAME      => 'Catalyst::Plugin::SubRequest',
-    AUTHOR    => 'Marcus Ramberg <marcus@thefeed.no>',
-    PREREQ_PM => {
-        Catalyst     => '5.00',
-    },
-    VERSION_FROM => 'SubRequest.pm'
-);
+name 'Catalyst-Plugin-SubRequest';
+all_from 'lib/Catalyst/Plugin/SubRequest.pm';
+
+requires 'Catalyst::Runtime';
+
+requires 'Test::More';
+
+auto_install;
+WriteAll;

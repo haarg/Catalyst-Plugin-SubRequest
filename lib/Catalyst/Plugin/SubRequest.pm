@@ -3,7 +3,7 @@ package Catalyst::Plugin::SubRequest;
 use strict;
 use Time::HiRes qw/tv_interval/;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 NAME
 

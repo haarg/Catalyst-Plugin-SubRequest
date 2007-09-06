@@ -1,21 +1,35 @@
 NAME
-    Catalyst::Plugin::Static - Serve static files with Catalyst
+    Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
 SYNOPSIS
-        use Catalyst 'Static';
+        use Catalyst 'SubRequest';
 
-        $c->serve_static;
+        $c->subreq('/test/foo/bar', { template => 'magic.tt' });
+
+        $c->subreq(        {       path            => '/test/foo/bar',
+                           body            => $body        },
+                   {       template        => 'magic.tt'           });
 
 DESCRIPTION
-    Serve static files from config->{root}.
+    Make subrequests to actions in Catalyst. Uses the catalyst dispatcher,
+    so it will work like an external url call.
 
-  METHODS
-   serve_static
+METHODS
+    subreq [path as string or hash ref], [stash as hash ref], [parameters as
+    hash ref]
+    sub_request
+        Takes a full path to a path you'd like to dispatch to. If the path
+        is passed as a hash ref then it can include body, action, match and
+        path. Any additional parameters are put into the stash.
+
 SEE ALSO
     Catalyst.
 
 AUTHOR
-    Sebastian Riedel, "sri@cpan.org"
+    Marcus Ramberg, "mramberg@cpan.org"
+
+THANK YOU
+    SRI, for writing the awesome Catalyst framework
 
 COPYRIGHT
     This program is free software, you can redistribute it and/or modify it
