@@ -1,6 +1,6 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
-0.12  2007-09-05
+0.12  2007-09-12 13:08:00 CET
         - Switch to Module::Install
         - Fixed README (RT #16459)
 
