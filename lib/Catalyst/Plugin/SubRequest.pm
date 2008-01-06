@@ -3,7 +3,7 @@ package Catalyst::Plugin::SubRequest;
 use strict;
 use Time::HiRes qw/tv_interval/;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 =head1 NAME
 
@@ -81,16 +81,15 @@ sub sub_request {
 
     $inner_ctx->stash($stash || {});
     
-    $inner_ctx->dispatch;
     
-    if ($c->debug) {
-        $inner_ctx->stats->setNodeValue({
-            action => 'subrequest:',
-            comment => '',
-            elapsed => sprintf('%fs', tv_interval($inner_ctx->stats->getNodeValue)),
-        });
-        $c->stats->addChild($inner_ctx->stats);
-    }
+    $c->stats->profile(
+        begin   => 'subrequest: /' . $path,
+        comment => '',
+    ) if ($c->debug); 
+        
+    $inner_ctx->dispatch;
+
+    $c->stats->profile( end => 'subrequest: /' . $path ) if ($c->debug);
     
     return $inner_ctx->response->body;
 }

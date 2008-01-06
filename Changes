@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.13  2008-01-06 22:33:00 CET
+        - Update to work with new Stats package.
+
 0.12  2007-09-12 13:08:00 CET
         - Switch to Module::Install
         - Fixed README (RT #16459)
