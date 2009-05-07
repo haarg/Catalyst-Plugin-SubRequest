@@ -1,4 +1,4 @@
-use inc::Module::Install 0.67;
+use inc::Module::Install 0.87;
 
 name 'Catalyst-Plugin-SubRequest';
 all_from 'lib/Catalyst/Plugin/SubRequest.pm';
