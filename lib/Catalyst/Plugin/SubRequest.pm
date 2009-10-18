@@ -3,7 +3,7 @@ package Catalyst::Plugin::SubRequest;
 use strict;
 use Time::HiRes qw/tv_interval/;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 =head1 NAME
 
@@ -107,6 +107,12 @@ Marcus Ramberg, C<mramberg@cpan.org>
 SRI, for writing the awesome Catalyst framework
 
 =head1 COPYRIGHT
+
+Copyright (c) 2005 - 2008
+the Catalyst::Plugin::SubRequest L</AUTHOR>
+as listed above.
+
+=head1 LICENSE
 
 This program is free software, you can redistribute it and/or modify it under
 the same terms as Perl itself.
