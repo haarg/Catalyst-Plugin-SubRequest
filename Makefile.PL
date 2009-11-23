@@ -1,9 +1,9 @@
-use inc::Module::Install 0.87;
+use inc::Module::Install 0.91;
 
 name 'Catalyst-Plugin-SubRequest';
 all_from 'lib/Catalyst/Plugin/SubRequest.pm';
 
-requires 'Catalyst::Runtime' => '5.7012';
+requires 'Catalyst::Runtime' => '5.80003';
 requires 'Test::More';
 
 if ($Module::Install::AUTHOR) {
