@@ -1,5 +1,10 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.15  2009-11-23 22:47:32 GMT
+        - Be compatible with Catalyst 5.80014 by not writing to the
+          request body directly.
+        - Remove deprecation warnings by moving actions out of the test app.
+
 0.14  2009-10-18 18:30:00 BST
         - Tweak copyright info to ease downstream packaging.
 

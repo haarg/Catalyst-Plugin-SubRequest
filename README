@@ -32,6 +32,10 @@ THANK YOU
     SRI, for writing the awesome Catalyst framework
 
 COPYRIGHT
+    Copyright (c) 2005 - 2008 the Catalyst::Plugin::SubRequest "AUTHOR" as
+    listed above.
+
+LICENSE
     This program is free software, you can redistribute it and/or modify it
     under the same terms as Perl itself.
 

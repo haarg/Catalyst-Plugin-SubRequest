@@ -1,9 +1,10 @@
 package Catalyst::Plugin::SubRequest;
 
 use strict;
+use warnings;
 use Time::HiRes qw/tv_interval/;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 =head1 NAME
 
@@ -61,6 +62,7 @@ sub sub_request {
     } else {
         $request_mods{path} = $path;
     }
+    $request_mods{_body} = delete $request_mods{body};
 
     my $fake_engine = bless(
         {
@@ -98,9 +100,11 @@ sub sub_request {
 
 L<Catalyst>.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Marcus Ramberg, C<mramberg@cpan.org>
+
+Tomas Doran (t0m) C<< bobtfish@bobtfish.net >>
 
 =head1 THANK YOU
 
@@ -109,7 +113,7 @@ SRI, for writing the awesome Catalyst framework
 =head1 COPYRIGHT
 
 Copyright (c) 2005 - 2008
-the Catalyst::Plugin::SubRequest L</AUTHOR>
+the Catalyst::Plugin::SubRequest L</AUTHORS>
 as listed above.
 
 =head1 LICENSE
