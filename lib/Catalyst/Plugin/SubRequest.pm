@@ -26,7 +26,7 @@ dispatcher, so it will work like an external url call.
 
 =head1 METHODS
 
-=over 4 
+=over 4
 
 =item subreq [path as string or hash ref], [stash as hash ref], [parameters as hash ref]
 
@@ -36,7 +36,7 @@ Takes a full path to a path you'd like to dispatch to.
 If the path is passed as a hash ref then it can include body, action, match and path.
 Any additional parameters are put into the stash.
 
-=back 
+=back
 
 =cut
 
@@ -80,17 +80,17 @@ sub sub_request {
     my $inner_ctx = $class->prepare;
 
     $inner_ctx->stash($stash || {});
-    
-    
+
+
     $c->stats->profile(
         begin   => 'subrequest: /' . $path,
         comment => '',
-    ) if ($c->debug); 
-        
+    ) if ($c->debug);
+
     $inner_ctx->dispatch;
 
     $c->stats->profile( end => 'subrequest: /' . $path ) if ($c->debug);
-    
+
     return $inner_ctx->response->body;
 }
 
@@ -127,7 +127,7 @@ sub AUTOLOAD { return 1; } # yeah yeah yeah
 sub prepare {
     my ($self, $c) = @_;
     my $req = $c->request;
-    
+
     @{$req}{keys %{$self->{orig_request}}} = values %{$self->{orig_request}};
     while (my ($key,$value) = each %{$self->{request_mods}}) {
         if (my $mut = $req->can($key)) {
