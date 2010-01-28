@@ -1,6 +1,6 @@
 package main;
 
-use Test::More tests => 9;
+use Test::More tests => 12;
 use lib 't/lib';
 use Catalyst::Test 'TestApp';
 use File::stat;
@@ -25,3 +25,10 @@ my $stat = stat($0);
     is( $response->code, 200, 'OK status code' );
     is( $response->content, '1abc3', 'Normal request content' );
 }
+
+{
+    ok( my $response = request('/subtest_full_response'),    'Sub Reuqest returning full response object'  );
+    is( $response->code, 200,                 'OK status code'  );
+    is( $response->content, '1text/csv3',    'Normal request content', );
+}
+

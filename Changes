@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.16  2010-01-28 21:09:04 GMT
+        - Add subreq_res to get the full Catalyst::Response back
+          from the sub request. RT#39486
+
 0.15  2009-11-23 22:47:32 GMT
         - Be compatible with Catalyst 5.80014 by not writing to the
           request body directly.

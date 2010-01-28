@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Time::HiRes qw/tv_interval/;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 =head1 NAME
 
@@ -14,16 +14,29 @@ Catalyst::Plugin::SubRequest - Make subrequests to actions in Catalyst
 
     use Catalyst 'SubRequest';
 
-    $c->subreq('/test/foo/bar', { template => 'magic.tt' });
+    my $res_body = $c->subreq('/test/foo/bar', { template => 'magic.tt' });
 
-    $c->subreq(        {       path            => '/test/foo/bar',
-                       body            => $body        },
-               {       template        => 'magic.tt'           });
+    my $res_body = $c->subreq( {
+       path            => '/test/foo/bar',
+       body            => $body
+    }, {
+       template        => 'magic.tt'
+    });
+
+    # Get the full response object
+    my $res = $c->subreq_res('/test/foo/bar', {
+        template => 'mailz.tt'
+    }, {
+        param1   => 23
+    });
+    $c->log->warn( $res->content_type );
 
 =head1 DESCRIPTION
 
 Make subrequests to actions in Catalyst. Uses the  catalyst
 dispatcher, so it will work like an external url call.
+Methods are provided both to get the body of the response and the full
+response (L<Catalyst::Response>) object.
 
 =head1 METHODS
 
@@ -34,16 +47,36 @@ dispatcher, so it will work like an external url call.
 =item sub_request
 
 Takes a full path to a path you'd like to dispatch to.
-If the path is passed as a hash ref then it can include body, action, match and path.
-Any additional parameters are put into the stash.
+
+If the path is passed as a hash ref then it can include body, action,
+match and path.
+
+An optional second argument as hashref can contain data to put into the
+stash of the subrequest.
+
+An optional third argument as hashref can contain data to pass as
+parameters to the subrequest.
+
+Returns the body of the response.
+
+=item subreq_res [path as string or hash ref], [stash as hash ref], [parameters as hash ref]
+
+=item sub_request_response
+
+Like C<sub_request()>, but returns a full L<Catalyst::Response> object.
 
 =back
 
 =cut
 
 *subreq = \&sub_request;
+*subreq_res = \&sub_request_response;
 
 sub sub_request {
+    return shift->sub_request_response( @_ )->body ;
+}
+
+sub sub_request_response {
     my ( $c, $path, $stash, $params ) = @_;
 
     $path =~ s#^/##;
@@ -93,7 +126,7 @@ sub sub_request {
 
     $c->stats->profile( end => 'subrequest: /' . $path ) if ($c->debug);
 
-    return $inner_ctx->response->body;
+    return $inner_ctx->response;
 }
 
 =head1 SEE ALSO

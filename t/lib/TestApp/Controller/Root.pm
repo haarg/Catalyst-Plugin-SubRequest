@@ -29,6 +29,18 @@ sub subtest_params : Global {
     $c->res->body($c->res->body().$after);
 }
 
+sub subtest_full_response : Global {
+    my ( $self, $c ) = @_;
+    my $subreq_res = $c->subreq_res('/typesetter');
+    $c->res->body( $c->res->body() . $subreq_res->content_type );
+}
+
+sub typesetter : Global {
+    my ( $self, $c, $arg ) = @_;
+    $c->res->content_type( 'text/csv' );
+    $c->res->body($c->res->body());
+}
+
 sub end : Private {
     my ( $self, $c ) = @_;
     $c->res->body($c->res->body().'3');
