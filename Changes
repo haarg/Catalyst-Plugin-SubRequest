@@ -1,5 +1,7 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+        - Added subrequest and subrequest_response names aliased to sub_request and sub_request_response methods
+
 0.16  2010-01-28 21:09:04 GMT
         - Add subreq_res to get the full Catalyst::Response back
           from the sub request. RT#39486
