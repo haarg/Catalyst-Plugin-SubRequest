@@ -29,6 +29,13 @@ sub subtest_params : Global {
     $c->res->body($c->res->body().$after);
 }
 
+sub subtest_req : Global {
+    my ( $self, $c ) = @_;
+    my $subreq = $c->subreq('/normal/2');
+    my $after = $c->req->uri->path;
+    $c->res->body($after);
+}
+
 sub subtest_full_response : Global {
     my ( $self, $c ) = @_;
     my $subreq_res = $c->subreq_res('/typesetter');
