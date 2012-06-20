@@ -1,5 +1,9 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.18  2012-06-20 08:58:54 BRT
+        - Major refactor using Plack
+        - Fix RT#77830 side-effect propagation to original request
+
 0.17  2011-03-22 09:08:00 GMT
         - Added subrequest and subrequest_response names aliased to 
           sub_request and sub_request_response methods

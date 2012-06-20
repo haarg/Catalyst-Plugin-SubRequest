@@ -59,8 +59,13 @@ AUTHORS
 
     Tomas Doran (t0m) "bobtfish@bobtfish.net"
 
+MAINTAINERS
+    Eden Cardim (edenc) "eden@insoli.de"
+
 THANK YOU
     SRI, for writing the awesome Catalyst framework
+
+    MIYAGAWA, for writing the awesome Plack toolkit
 
 COPYRIGHT
     Copyright (c) 2005 - 2011 the Catalyst::Plugin::SubRequest "AUTHORS" as

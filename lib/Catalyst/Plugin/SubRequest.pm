@@ -3,7 +3,7 @@ package Catalyst::Plugin::SubRequest;
 use strict;
 use warnings;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 =head1 NAME
 
@@ -123,6 +123,7 @@ Eden Cardim (edenc) C<eden@insoli.de>
 =head1 THANK YOU
 
 SRI, for writing the awesome Catalyst framework
+
 MIYAGAWA, for writing the awesome Plack toolkit
 
 =head1 COPYRIGHT
