@@ -29,7 +29,7 @@ my $stat = stat($0);
 {
     ok( my $response = request('/subtest_req'), 'Sub request not stomping original request object' );
     is( $response->code, 200, 'OK status code' );
-    is( $response->content, '/subtest_req', 'Normal request content' );
+    is( $response->content, '/subtest_req3', 'Normal request content' );
 }
 
 {

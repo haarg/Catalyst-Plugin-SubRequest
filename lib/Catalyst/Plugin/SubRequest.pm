@@ -2,7 +2,6 @@ package Catalyst::Plugin::SubRequest;
 
 use strict;
 use warnings;
-use Time::HiRes qw/tv_interval/;
 
 our $VERSION = '0.17';
 
@@ -84,56 +83,27 @@ sub sub_request {
 
 sub sub_request_response {
     my ( $c, $path, $stash, $params ) = @_;
-
-    $path =~ s#^/##;
-
-    $params ||= {};
-
-    my %request_mods = (
-        body => undef,
-        action => undef,
-        match => undef,
-        parameters => $params,
-    );
-
-    if (ref $path eq 'HASH') {
-        @request_mods{keys %$path} = values %$path;
-        $path = $path->{path};
-    } else {
-        $request_mods{path} = $path;
-    }
-    $request_mods{_body} = delete $request_mods{body};
-
-    my $fake_engine = bless(
-        {
-            orig_request => $c->req,
-            request_mods => \%request_mods,
-        },
-        'Catalyst::Plugin::SubRequest::Internal::FakeEngine'
-    );
-
-    my $class = ref($c);
-
-    no strict 'refs';
-    no warnings 'redefine';
-
-    local *{"${class}::engine"} = sub { $fake_engine };
-
-    my $inner_ctx = $class->prepare;
-
-    $inner_ctx->stash($stash || {});
-
+    $stash ||= {};
+    my $env = $c->request->env;
+    local $env->{PATH_INFO} = $path;
+    local $env->{REQUEST_URI} = $env->{SCRIPT_NAME} . $path;
+    $env->{REQUEST_URI} =~ s|//|/|g;
+    my $response_cb = $c->response->_response_cb;
+    my $class = ref($c) || $c;
 
     $c->stats->profile(
-        begin   => 'subrequest: /' . $path,
+        begin   => 'subrequest: ' . $path,
         comment => '',
     ) if ($c->debug);
 
-    $inner_ctx->dispatch;
+    my $i_ctx = $class->prepare(env => $env, response_cb => $response_cb);
+    $i_ctx->stash($stash);
+    $i_ctx->dispatch;
+    $i_ctx->finalize;
 
-    $c->stats->profile( end => 'subrequest: /' . $path ) if ($c->debug);
+    $c->stats->profile( end => 'subrequest: ' . $path ) if $c->debug;
 
-    return $inner_ctx->response;
+    return $i_ctx->response;
 }
 
 =head1 SEE ALSO
@@ -146,9 +116,14 @@ Marcus Ramberg, C<mramberg@cpan.org>
 
 Tomas Doran (t0m) C<< bobtfish@bobtfish.net >>
 
+=head1 MAINTAINERS
+
+Eden Cardim (edenc) C<eden@insoli.de>
+
 =head1 THANK YOU
 
 SRI, for writing the awesome Catalyst framework
+MIYAGAWA, for writing the awesome Plack toolkit
 
 =head1 COPYRIGHT
 
@@ -162,24 +137,5 @@ This program is free software, you can redistribute it and/or modify it under
 the same terms as Perl itself.
 
 =cut
-
-package # hide from PAUSE
-  Catalyst::Plugin::SubRequest::Internal::FakeEngine;
-
-sub AUTOLOAD { return 1; } # yeah yeah yeah
-
-sub prepare {
-    my ($self, $c) = @_;
-    my $req = $c->request;
-
-    @{$req}{keys %{$self->{orig_request}}} = values %{$self->{orig_request}};
-    while (my ($key,$value) = each %{$self->{request_mods}}) {
-        if (my $mut = $req->can($key)) {
-            $req->$mut($value);
-        } else {
-            $req->{$key} = $value;
-        }
-    }
-}
 
 1;
