@@ -42,6 +42,18 @@ sub subtest_full_response : Global {
     $c->res->body( $c->res->body() . $subreq_res->content_type );
 }
 
+sub subtest_with_params :Global {
+  my($self, $c) = @_;
+  $c->res->body(
+    $c->subrequest('/plain_param', {},
+      { content => 'foo' }));
+}
+
+sub plain_param :Global {
+  my($self, $c) = @_;
+  $c->res->body($c->req->params->{content});
+}
+
 sub typesetter : Global {
     my ( $self, $c, $arg ) = @_;
     $c->res->content_type( 'text/csv' );
