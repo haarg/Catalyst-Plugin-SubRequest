@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Plack::Request;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
