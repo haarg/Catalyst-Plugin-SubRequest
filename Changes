@@ -1,5 +1,8 @@
 Revision history for Perl extension Catalyst::Plugin::SubRequest
 
+0.19  2012-07-19 23:50:58 BRT
+        - Fixed non-propagation of parameters to subrequests
+
 0.18  2012-06-20 08:58:54 BRT
         - Major refactor using Plack
         - Fix RT#77830 side-effect propagation to original request
