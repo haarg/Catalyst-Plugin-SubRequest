@@ -60,6 +60,14 @@ sub typesetter : Global {
     $c->res->body($c->res->body());
 }
 
+sub doublesubtest :Global {
+    my ( $self, $c) = @_;
+    $c->res->body(
+      $c->subrequest('/normal/5').
+      $c->subrequest('/normal/6')
+    );
+}
+
 sub end : Private {
     my ( $self, $c ) = @_;
     $c->res->body($c->res->body().'3');
