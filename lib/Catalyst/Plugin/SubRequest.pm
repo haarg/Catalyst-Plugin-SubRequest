@@ -73,43 +73,65 @@ Like C<sub_request()>, but returns a full L<Catalyst::Response> object.
 
 =cut
 
-*subreq = \&sub_request;
-*subrequest = \&sub_request;
-*subreq_res = \&sub_request_response;
+*subreq              = \&sub_request;
+*subrequest          = \&sub_request;
+*subreq_res          = \&sub_request_response;
 *subrequest_response = \&sub_request_response;
 
 sub sub_request {
-    return shift->sub_request_response( @_ )->body ;
+  return shift->sub_request_response(@_)->body;
 }
 
 sub sub_request_response {
-    my ( $c, $path, $stash, $params ) = @_;
-    $stash ||= {};
-    my $env = $c->request->env;
-    my $req = Plack::Request->new($env);
-    my $uri = $req->uri;
-    $uri->query_form($params||{});
-    $env->{QUERY_STRING} = $uri->query||'';
-    local $env->{PATH_INFO} = $path;
-    local $env->{REQUEST_URI} = $env->{SCRIPT_NAME} . $path;
-    $env->{REQUEST_URI} =~ s|//|/|g;
-    my $response_cb = $c->response->_response_cb;
-    my $class = ref($c) || $c;
+  my ( $c, $path, $stash, $params ) = @_;
+  $stash ||= {};
+  my $env = $c->request->env;
+  my $req = Plack::Request->new($env);
+  my $uri = $req->uri;
+  $uri->query_form( $params || {} );
+  local $env->{QUERY_STRING} = $uri->query || '';
+  local $env->{PATH_INFO}    = $path;
+  local $env->{REQUEST_URI}  = $env->{SCRIPT_NAME} . $path;
+  $env->{REQUEST_URI} =~ s|//|/|g;
+  my $class = ref($c) || $c;
 
-    $c->stats->profile(
-        begin   => 'subrequest: ' . $path,
-        comment => '',
-    ) if ($c->debug);
+  $c->stats->profile(
+    begin   => 'subrequest: ' . $path,
+    comment => '',
+  ) if ( $c->debug );
 
-    my $i_ctx = $class->prepare(env => $env, response_cb => $response_cb);
-    $i_ctx->stash($stash);
-    $i_ctx->dispatch;
-    $i_ctx->finalize;
+  # need this so that
+  my $writer = Catalyst::Plugin::SubRequest::Writer->new;
+  my $response_cb = sub { $writer };
+  my $i_ctx = $class->prepare( env => $env, response_cb => $response_cb );
+  $i_ctx->stash($stash);
+  $i_ctx->dispatch;
+  $i_ctx->finalize;
+  $c->stats->profile( end => 'subrequest: ' . $path ) if $c->debug;
 
-    $c->stats->profile( end => 'subrequest: ' . $path ) if $c->debug;
+  $i_ctx->response->body($writer->body);
 
-    return $i_ctx->response;
+  return $i_ctx->response;
 }
+
+package Catalyst::Plugin::SubRequest::Writer;
+use Moose;
+has body => (
+  isa     => 'Str',
+  is      => 'ro',
+  traits  => ['String'],
+  default => '',
+  handles => { write => 'append' }
+);
+has _is_closed => ( isa => 'Bool', is => 'rw', default => 0 );
+sub close { shift->_is_closed(1) }
+
+around write => sub {
+  my $super = shift;
+  my $self = shift;
+  return if $self->_is_closed;
+  $self->$super(@_);
+};
 
 =head1 SEE ALSO
 
